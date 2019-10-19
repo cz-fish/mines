@@ -24,12 +24,12 @@ MINES = 90
 
 def printUsage(name):
 	global WIDTH, HEIGHT, MINES
-	print """Usage: %s [options]
+	print("""Usage: %s [options]
 where [options] may be one or more of the following
  -h,   --help      this help
  -x X, --width=X   set width of the mine field (%d)
  -y Y, --height=Y  set height of the mine field (%d)
- -m M, --mines=M   set number of mines (%d)""" % (name, WIDTH, HEIGHT, MINES)
+ -m M, --mines=M   set number of mines (%d)""" % (name, WIDTH, HEIGHT, MINES))
 
 def numberToAlpha(number):
 	"""Converts the given integer to its corresponding letter or string of letters.
@@ -43,7 +43,7 @@ def numberToAlpha(number):
 		else:
 			x -= 1
 		r = chr(ord('A')+x) + r
-		number /= 26
+		number //= 26
 		if number == 0:
 			break
 	return r
@@ -54,9 +54,9 @@ def alphaToNumber(alpha):
 	l = len(alpha)
 	while l > 0:
 		c = alpha[0]
-		if ord(c) >= ord('a') and ord(c) <= ('z'):
+		if ord(c) >= ord('a') and ord(c) <= ord('z'):
 			n = ord(c) - ord('a')
-		elif ord(c) >= ord('A') and ord(c) <= ('Z'):
+		elif ord(c) >= ord('A') and ord(c) <= ord('Z'):
 			n = ord(c) - ord('A')
 		else:
 			raise ValueError
@@ -123,8 +123,8 @@ class MineField():
 		self.height = height
 		self.mines = mines
 		# arrays numbers and visible are indexed with [row][column]
-		self.numbers = [[0 for i in xrange(width)] for j in xrange(height)]
-		self.visible = [[0 for i in xrange(width)] for j in xrange(height)]
+		self.numbers = [[0 for i in range(width)] for j in range(height)]
+		self.visible = [[0 for i in range(width)] for j in range(height)]
 		self.placeMines()
 		# number of exclamation marks placed
 		self.exclam = 0
@@ -146,8 +146,8 @@ class MineField():
 				self.numbers[y][x] = -1
 				i += 1
 		# fill the rest of the numbers array
-		for x in xrange(self.width):
-			for y in xrange(self.height):
+		for x in range(self.width):
+			for y in range(self.height):
 				if self.numbers[y][x] == -1:
 					continue
 				# count neighbouring mines
@@ -244,18 +244,18 @@ class MineField():
 		"""
 		# compute horizontal offset to have the field centered
 		size = scr.getmaxyx()
-		self.xoff = (size[1] - 3 * self.width - 3) / 2
+		self.xoff = (size[1] - 3 * self.width - 3) // 2
 		if self.xoff < 0:
 			self.xoff = 0
 		scr.move(1, self.xoff + 3)
 		# print top captions (column indices)
-		for x in xrange(self.width):
+		for x in range(self.width):
 			self.printHorCaption(scr, x, x == posx)
 		# print left captions (row indices) and the field
-		for y in xrange(self.height):
+		for y in range(self.height):
 			scr.move(y + 2, self.xoff)
 			self.printVertCaption(scr, y, y == posy)
-			for x in xrange(self.width):
+			for x in range(self.width):
 				self.printPosition(scr, x, y, x == posx and y == posy)
 
 		# print current score
@@ -315,8 +315,8 @@ class MineField():
 			return self.solved
 		# all positions without mines must have been discovered to
 		# claim the game solved
-		for x in xrange(self.width):
-			for y in xrange(self.height):
+		for x in range(self.width):
+			for y in range(self.height):
 				if self.numbers[y][x] != -1 and self.visible[y][x] != 1:
 					return 0
 		self.solved = 1
@@ -325,8 +325,8 @@ class MineField():
 	def boom(self):
 		self.solved = 2
 		# uncover all mines
-		for x in xrange(self.width):
-			for y in xrange(self.height):
+		for x in range(self.width):
+			for y in range(self.height):
 				if self.numbers[y][x] != -1 and self.visible[y][x] == 2:
 					# this position is incorrectly marked as a mine
 					self.visible[y][x] = 4
@@ -610,6 +610,6 @@ if __name__ == '__main__':
 
 	# fail-safe wrapper for the main function
 	curses.wrapper(main)
-	print >>sys.stderr, endmsg
+	print(endmsg, file=sys.stderr)
 
 
